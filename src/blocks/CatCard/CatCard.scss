@@ -149,3 +149,12 @@
     }
   }
 }
+
+@media (max-width: 480px) {
+  .cat-card__edit,
+  .cat-card__pdf,
+  .cat-card__delete {
+    font-size: 11px;
+    padding: 8px 4px;
+  }
+}

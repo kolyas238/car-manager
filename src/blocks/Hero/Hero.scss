@@ -33,3 +33,11 @@
     font-size: 14px;
   }
 }
+
+@media (max-width: 640px) {
+  .hero { padding: 28px 18px; }
+
+  .hero__title { font-size: 26px; }
+
+  .hero__subtitle { font-size: 14px; }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { fileToCompressedDataUrl } from '../../utils/image';
+import CatLightbox from '../CatLightbox/CatLightbox';
 import './CatGallery.scss';
 
 export default function CatGallery({
@@ -13,20 +14,22 @@ export default function CatGallery({
   const inputRef = useRef(null);
   const [error, setError] = useState('');
   const [commentDrafts, setCommentDrafts] = useState({});
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const photos = cat.photos || [];
 
   useEffect(() => {
     const handleKey = (event) => {
-      if (event.key === 'Escape') onClose();
+      // Esc закрывает лайтбокс первым, галерею — вторым
+      if (event.key === 'Escape' && lightboxIndex === null) onClose();
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose]);
+  }, [onClose, lightboxIndex]);
 
   const handleFiles = async (event) => {
     const files = Array.from(event.target.files || []);
-    event.target.value = ''; // чтобы можно было выбрать тот же файл снова
+    event.target.value = '';
 
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
@@ -82,13 +85,20 @@ export default function CatGallery({
           <p className="cat-gallery__empty">Пока нет фото — загрузи первое! 🐾</p>
         ) : (
           <div className="cat-gallery__grid">
-            {photos.map((photo) => (
+            {photos.map((photo, index) => (
               <figure key={photo.id} className="cat-gallery__item">
-                <img
-                  className="cat-gallery__img"
-                  src={photo.dataUrl}
-                  alt={cat.name}
-                />
+                <button
+                  className="cat-gallery__zoom"
+                  type="button"
+                  title="Открыть на весь экран"
+                  onClick={() => setLightboxIndex(index)}
+                >
+                  <img
+                    className="cat-gallery__img"
+                    src={photo.dataUrl}
+                    alt={cat.name}
+                  />
+                </button>
 
                 {cat.profilePhotoId === photo.id && (
                   <span className="cat-gallery__badge">Фото профиля</span>
@@ -143,6 +153,14 @@ export default function CatGallery({
           </div>
         )}
       </div>
+
+      {lightboxIndex !== null && photos[lightboxIndex] && (
+        <CatLightbox
+          photos={photos}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }

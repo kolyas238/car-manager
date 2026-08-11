@@ -109,3 +109,9 @@
     &:disabled { opacity: 0.6; cursor: default; }
   }
 }
+
+@media (max-width: 480px) {
+  .auth-modal { padding: 12px; }
+
+  .auth-modal__panel { padding: 18px; }
+}

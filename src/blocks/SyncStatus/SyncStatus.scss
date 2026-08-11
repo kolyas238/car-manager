@@ -25,3 +25,12 @@
     border-color: currentColor;
   }
 }
+
+@media (max-width: 640px) {
+  .sync-status {
+    order: 10;          // уезжает на отдельную строку шапки
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+}
