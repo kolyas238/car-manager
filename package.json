@@ -1,7 +1,12 @@
 {
   "name": "cat-manager",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
+  "description": "Менеджер котиков: анкеты пушистых, фотогалереи, PDF-паспорта и облачная синхронизация между устройствами",
+  "author": {
+    "name": "k238",
+    "email": "kolyas238@gmail.com"
+  },
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
@@ -43,6 +48,7 @@
   "build": {
     "appId": "ru.catmanager.app",
     "productName": "Cat Manager",
+    "icon": "build/icon.ico",
     "files": [
       "dist/**/*",
       "electron/**/*"
