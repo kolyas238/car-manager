@@ -49,13 +49,17 @@ export function updateCat(id, data) {
 export function deleteCat(id) {
   const cats = readCats().filter((cat) => cat.id !== id);
   writeCats(cats);
+  addTombstone(id);
   return cats;
 }
 
 export function importCats(imported) {
   const byId = new Map(readCats().map((cat) => [cat.id, cat]));
   for (const cat of imported) {
-    if (cat && cat.id) byId.set(cat.id, { ...cat });
+    if (cat && cat.id) {
+      byId.set(cat.id, { ...cat });
+      removeTombstone(cat.id);
+    }
   }
   const cats = [...byId.values()];
   writeCats(cats);
@@ -141,4 +145,30 @@ export function addComment(catId, photoId, text) {
   });
   writeCats(cats);
   return cats;
+}
+
+// ─── Надгробия: синхронизация удалений ────────────────
+const TOMB_KEY = 'cat-manager:tombstones';
+
+export function getTombstones() {
+  try {
+    return JSON.parse(localStorage.getItem(TOMB_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+export function addTombstone(id) {
+  const tombs = getTombstones();
+  if (!tombs.includes(id)) {
+    tombs.push(id);
+    localStorage.setItem(TOMB_KEY, JSON.stringify(tombs));
+  }
+}
+
+export function removeTombstone(id) {
+  localStorage.setItem(
+    TOMB_KEY,
+    JSON.stringify(getTombstones().filter((t) => t !== id))
+  );
 }

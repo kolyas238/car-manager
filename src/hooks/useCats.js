@@ -11,7 +11,8 @@ async function applyOp(uid, op) {
     case 'cat-set':
       return cloud.pushCat(uid, op.cat);
     case 'cat-delete':
-      return cloud.deleteCatWithPhotos(uid, op.catId);
+      await cloud.deleteCatWithPhotos(uid, op.catId);
+      return cloud.pushTombstone(uid, op.catId);
     case 'photo-set':
       return cloud.pushPhoto(uid, op.catId, op.photo);
     case 'photo-delete':
@@ -25,7 +26,7 @@ export function useCats(user, authReady) {
   const [cats, setCats] = useState(() => catStorage.getCats());
   const [syncStatus, setSyncStatus] = useState('local');
   const flushing = useRef(false);
-  const prevUidRef = useRef(null); // 👇 НОВОЕ (правка 1)
+  const prevUidRef = useRef(null);
 
   const flush = useCallback(async () => {
     if (!user || flushing.current) return;
@@ -65,14 +66,29 @@ export function useCats(user, authReady) {
     let cancelled = false;
     (async () => {
       try {
-        // 👇 НОВОЕ (правка 2): сменился пользователь (вошёл/вышел) —
-        // локальные данные нужно отправить в облако нового аккаунта
         if (prevUidRef.current !== user.uid) {
           localStorage.removeItem(SEED_KEY);
           prevUidRef.current = user.uid;
         }
 
-        // один раз отправляем локальную базу в облако
+        // 1) сначала узнаём, кого удалили на других устройствах
+        let tombs = [];
+        try {
+          tombs = await cloud.pullTombstones(user.uid);
+        } catch {
+          tombs = [];
+        }
+
+        // 2) вычищаем удалённых из локальной базы
+        if (tombs.length > 0) {
+          const before = catStorage.getCats();
+          const cleaned = before.filter((cat) => !tombs.includes(cat.id));
+          if (cleaned.length !== before.length) {
+            catStorage.replaceCats(cleaned);
+          }
+        }
+
+        // 3) один раз отправляем локальную базу в облако
         if (!localStorage.getItem(SEED_KEY)) {
           for (const cat of catStorage.getCats()) {
             queue.enqueue({ type: 'cat-set', cat });
@@ -83,10 +99,12 @@ export function useCats(user, authReady) {
           localStorage.setItem(SEED_KEY, '1');
         }
 
+        // 4) тянем облако и сливаем (без удалённых)
         const remote = await cloud.pullAll(user.uid);
         if (cancelled) return;
-        if (remote.length > 0) {
-          const merged = mergeCats(catStorage.getCats(), remote);
+        const cleanRemote = remote.filter((cat) => !tombs.includes(cat.id));
+        if (cleanRemote.length > 0) {
+          const merged = mergeCats(catStorage.getCats(), cleanRemote);
           setCats(catStorage.replaceCats(merged));
         }
       } catch (error) {
@@ -101,7 +119,7 @@ export function useCats(user, authReady) {
     };
   }, [authReady, user, flush]);
 
-// ретраи + самовосстановление статуса
+  // ретраи + самовосстановление статуса
   useEffect(() => {
     const onOnline = () => flush();
     const onOffline = () => user && setSyncStatus('offline');
@@ -115,7 +133,6 @@ export function useCats(user, authReady) {
       } else if (queue.getQueue().length > 0) {
         flush();
       } else {
-        // сеть есть, очередь пуста — значит всё синхронизировано
         setSyncStatus((s) => (s === 'syncing' ? s : 'synced'));
       }
     }, 15000);

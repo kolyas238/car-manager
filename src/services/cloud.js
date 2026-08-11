@@ -46,3 +46,14 @@ export async function pullAll(uid) {
   }
   return cats;
 }
+
+export async function pushTombstone(uid, catId) {
+  await setDoc(doc(db, 'users', uid, 'tombstones', catId), {
+    deletedAt: Date.now(),
+  });
+}
+
+export async function pullTombstones(uid) {
+  const snap = await getDocs(collection(db, 'users', uid, 'tombstones'));
+  return snap.docs.map((d) => d.id);
+}
