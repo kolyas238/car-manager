@@ -101,15 +101,24 @@ export function useCats(user, authReady) {
     };
   }, [authReady, user, flush]);
 
-  // ретраи: вернулась сеть / тик по таймеру
+// ретраи + самовосстановление статуса
   useEffect(() => {
     const onOnline = () => flush();
     const onOffline = () => user && setSyncStatus('offline');
     window.addEventListener('online', onOnline);
     window.addEventListener('offline', onOffline);
+
     const interval = window.setInterval(() => {
-      if (user && queue.getQueue().length > 0) flush();
-    }, 30000);
+      if (!user) return;
+      if (!navigator.onLine) {
+        setSyncStatus('offline');
+      } else if (queue.getQueue().length > 0) {
+        flush();
+      } else {
+        // сеть есть, очередь пуста — значит всё синхронизировано
+        setSyncStatus((s) => (s === 'syncing' ? s : 'synced'));
+      }
+    }, 15000);
 
     return () => {
       window.removeEventListener('online', onOnline);
