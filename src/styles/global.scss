@@ -1,0 +1,52 @@
+@use 'variables' as *;
+
+:root {
+  color-scheme: light;
+
+  --color-bg: #{$color-bg};
+  --color-surface: #{$color-surface};
+  --color-primary: #{$color-primary};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-text: #{$color-text};
+  --color-text-muted: #{$color-text-muted};
+  --color-border: #{$color-border};
+  --color-danger: #{$color-danger};
+  --color-success: #{$color-success};
+  --color-accent-soft: #{$color-accent-soft};
+  --color-hero-from: #{$color-hero-from};
+  --color-hero-to: #{$color-hero-to};
+  --radius-m: #{$radius-m};
+  --radius-l: #{$radius-l};
+  --shadow-card: #{$shadow-card};
+}
+
+// ─── Тёмная тема ──────────────────────────────────────
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #171412;
+  --color-surface: #221d19;
+  --color-primary: #f2803b;
+  --color-primary-dark: #ffa066;
+  --color-text: #f0e9e2;
+  --color-text-muted: #a3968a;
+  --color-border: #3b332c;
+  --color-danger: #e5736f;
+  --color-success: #6cc18e;
+  --color-accent-soft: #2d2118;
+  --color-hero-from: #251a14;
+  --color-hero-to: #251a20;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: $font-stack;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+button { font-family: inherit; }
