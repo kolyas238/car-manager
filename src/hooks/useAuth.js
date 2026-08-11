@@ -3,6 +3,7 @@ import {
   EmailAuthProvider,
   linkWithCredential,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInAnonymously,
   signInWithEmailAndPassword,
   signOut,
@@ -29,18 +30,20 @@ export function useAuth() {
     return unsubscribe;
   }, []);
 
-  // привязать почту к текущему (анонимному) аккаунту — uid и данные сохраняются
+  // привязать почту к текущему аккаунту (uid и данные сохраняются)
   const linkEmail = (email, password) =>
     linkWithCredential(
       auth.currentUser,
       EmailAuthProvider.credential(email, password)
     );
 
-  // войти в существующий аккаунт
   const signInEmail = (email, password) =>
     signInWithEmailAndPassword(auth, email, password);
 
+  // письмо для восстановления пароля
+  const resetPassword = (email) => sendPasswordResetEmail(auth, email);
+
   const signOutUser = () => signOut(auth);
 
-  return { user, authReady, linkEmail, signInEmail, signOutUser };
+  return { user, authReady, linkEmail, signInEmail, resetPassword, signOutUser };
 }

@@ -5,10 +5,11 @@ const ERROR_MESSAGES = {
   'auth/email-already-in-use': 'Эта почта уже привязана к аккаунту — нажми «Войти в существующий».',
   'auth/credential-already-in-use': 'Эта почта уже привязана к аккаунту — нажми «Войти в существующий».',
   'auth/invalid-email': 'Похоже, в почте ошибка.',
+  'auth/missing-email': 'Сначала введи почту — на неё придёт письмо.',
+  'auth/user-not-found': 'Аккаунт с такой почтой не найден.',
   'auth/weak-password': 'Пароль должен быть не короче 6 символов.',
   'auth/invalid-credential': 'Неверная почта или пароль.',
   'auth/wrong-password': 'Неверная почта или пароль.',
-  'auth/user-not-found': 'Неверная почта или пароль.',
   'auth/too-many-requests': 'Слишком много попыток — подожди немного.',
 };
 
@@ -17,23 +18,45 @@ export default function AuthModal({
   onClose,
   onLinkEmail,
   onSignInEmail,
+  onResetPassword,
   onSignOut,
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
   const [busy, setBusy] = useState(false);
 
   const isAnonymous = !user || user.isAnonymous;
 
   const run = async (action) => {
     setError('');
+    setInfo('');
     setBusy(true);
     try {
       await action(email.trim(), password);
       onClose();
     } catch (e) {
       setError(ERROR_MESSAGES[e?.code] || 'Что-то пошло не так — попробуй ещё раз.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleReset = async () => {
+    setError('');
+    setInfo('');
+    const mail = email.trim();
+    if (!mail) {
+      setError(ERROR_MESSAGES['auth/missing-email']);
+      return;
+    }
+    setBusy(true);
+    try {
+      await onResetPassword(mail);
+      setInfo(`Письмо для восстановления отправлено на ${mail} 📬`);
+    } catch (e) {
+      setError(ERROR_MESSAGES[e?.code] || 'Не удалось отправить письмо — попробуй ещё раз.');
     } finally {
       setBusy(false);
     }
@@ -89,6 +112,7 @@ export default function AuthModal({
               />
 
               {error && <p className="auth-modal__error">{error}</p>}
+              {info && <p className="auth-modal__info">{info}</p>}
 
               <div className="auth-modal__actions">
                 <button
@@ -107,6 +131,15 @@ export default function AuthModal({
                   Войти в существующий
                 </button>
               </div>
+
+              <button
+                className="auth-modal__forgot"
+                type="button"
+                disabled={busy}
+                onClick={handleReset}
+              >
+                Забыли пароль?
+              </button>
             </form>
           </>
         ) : (

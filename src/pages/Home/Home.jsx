@@ -13,7 +13,7 @@ import { useTheme } from '../../hooks/useTheme';
 import './Home.scss';
 
 export default function Home() {
-  const { user, authReady, linkEmail, signInEmail, signOutUser } = useAuth();
+  const { user, authReady, linkEmail, signInEmail, resetPassword, signOutUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const {
     cats,
@@ -121,6 +121,7 @@ export default function Home() {
           onClose={() => setAuthOpen(false)}
           onLinkEmail={linkEmail}
           onSignInEmail={signInEmail}
+          onResetPassword={resetPassword}
           onSignOut={() => {
             setAuthOpen(false);
             signOutUser();
