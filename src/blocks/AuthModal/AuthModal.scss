@@ -135,3 +135,6 @@
 
   .auth-modal__panel { padding: 18px; }
 }
+
+.auth-modal { animation: fade-in 0.2s ease; }
+.auth-modal__panel { animation: pop-in 0.22s ease; }

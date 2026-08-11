@@ -7,6 +7,7 @@
   justify-content: center;
   padding: 24px;
   background: rgba(0, 0, 0, 0.88);
+  animation: fade-in 0.2s ease;
 
   &__figure {
     margin: 0;
@@ -21,6 +22,7 @@
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     user-select: none;
+    animation: pop-in 0.2s ease;
   }
 
   &__close {

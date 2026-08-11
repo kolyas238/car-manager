@@ -191,3 +191,6 @@
 
   .cat-gallery__img { height: 220px; }
 }
+
+.cat-gallery { animation: fade-in 0.2s ease; }
+.cat-gallery__panel { animation: pop-in 0.22s ease; }
