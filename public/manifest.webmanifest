@@ -1,0 +1,17 @@
+{
+  "name": "Менеджер котиков",
+  "short_name": "Котики",
+  "description": "Учёт пушистых членов семьи: анкеты, фото, паспорта",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f2ec",
+  "theme_color": "#f2803b",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "./pwa-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./pwa-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
