@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
 import Hero from '../../blocks/Hero/Hero';
-import CatForm from '../../blocks/CatForm/CatForm';
-import CatCatalog from '../../blocks/CatCatalog/CatCatalog';
-import CatGallery from '../../blocks/CatGallery/CatGallery';
+import VehicleForm from '../../blocks/VehicleForm/VehicleForm';
+import VehicleCatalog from '../../blocks/VehicleCatalog/VehicleCatalog';
+import VehicleDetails from '../../blocks/VehicleDetails/VehicleDetails';
 import BackupControls from '../../blocks/BackupControls/BackupControls';
 import SyncStatus from '../../blocks/SyncStatus/SyncStatus';
 import AuthModal from '../../blocks/AuthModal/AuthModal';
 import ThemeToggle from '../../blocks/ThemeToggle/ThemeToggle';
-import { useCats } from '../../hooks/useCats';
+import { useVehicles } from '../../hooks/useVehicles';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
 import { useClosing } from '../../hooks/useClosing';
@@ -17,31 +17,29 @@ export default function Home() {
   const { user, authReady, linkEmail, signInEmail, resetPassword, signOutUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const {
-    cats,
+    vehicles,
     syncStatus,
-    addCat,
-    updateCat,
-    removeCat,
-    importCats,
-    addPhoto,
-    deletePhoto,
-    addComment,
-    setProfilePhoto,
-  } = useCats(user, authReady);
+    addVehicle,
+    updateVehicle,
+    removeVehicle,
+    importVehicles,
+    addService,
+    deleteService,
+    addFuel,
+    deleteFuel,
+  } = useVehicles(user, authReady);
 
-  const [editingCat, setEditingCat] = useState(null);
-  const [galleryCatId, setGalleryCatId] = useState(null);
-  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState(null);
+  const [detailsId, setDetailsId] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const formRef = useRef(null);
 
-  const { mounted: galleryMounted, closing: galleryClosing } =
-    useClosing(galleryOpen, 500);
   const { mounted: formMounted, closing: formClosing } =
     useClosing(formOpen, 500);
 
-  const galleryCat = cats.find((cat) => cat.id === galleryCatId) || null;
+  const detailsVehicle =
+    vehicles.find((v) => v.id === detailsId) || null;
 
   const scrollToForm = () => {
     window.setTimeout(() => {
@@ -49,22 +47,17 @@ export default function Home() {
     }, 60);
   };
 
-  const handleEdit = (cat) => {
-    setEditingCat(cat);
+  const handleEdit = (vehicle) => {
+    setEditingVehicle(vehicle);
     setFormOpen(true);
     scrollToForm();
-  };
-
-  const handleCollapse = () => {
-    setFormOpen(false);
-    setEditingCat(null);
   };
 
   return (
     <div className="home">
       <header className="home__header header">
         <span className="header__logo">🚗</span>
-        <h1 className="header__title">Менеджер авто</h1>
+        <h1 className="header__title">Менеджер автомобилей</h1>
         <SyncStatus status={syncStatus} />
         <ThemeToggle theme={theme} onToggle={toggleTheme} />
         <button
@@ -84,12 +77,15 @@ export default function Home() {
           className={formClosing ? 'home__form home__form--closing' : 'home__form'}
         >
           {formMounted ? (
-            <CatForm
-              onAdd={addCat}
-              onUpdate={updateCat}
-              editingCat={editingCat}
-              onCancelEdit={() => setEditingCat(null)}
-              onCollapse={handleCollapse}
+            <VehicleForm
+              onAdd={addVehicle}
+              onUpdate={updateVehicle}
+              editingVehicle={editingVehicle}
+              onCancelEdit={() => setEditingVehicle(null)}
+              onCollapse={() => {
+                setFormOpen(false);
+                setEditingVehicle(null);
+              }}
             />
           ) : (
             <button
@@ -97,35 +93,31 @@ export default function Home() {
               type="button"
               onClick={() => setFormOpen(true)}
             >
-              ➕ Добавить авто
+              ➕ Добавить автомобиль
             </button>
           )}
         </div>
 
-        <CatCatalog
-          cats={cats}
+        <VehicleCatalog
+          vehicles={vehicles}
           onEdit={handleEdit}
-          onDelete={removeCat}
-          onOpenGallery={(cat) => {
-            setGalleryCatId(cat.id);
-            setGalleryOpen(true);
-          }}
+          onDelete={removeVehicle}
+          onOpenDetails={(vehicle) => setDetailsId(vehicle.id)}
         />
 
-        <BackupControls cats={cats} onImport={importCats} />
+        <BackupControls cats={vehicles} onImport={importVehicles} />
       </main>
 
       <footer className="home__footer">Сделано с ❤️ для автовладельцев</footer>
 
-      {galleryMounted && galleryCat && (
-        <CatGallery
-          cat={galleryCat}
-          closing={galleryClosing}
-          onClose={() => setGalleryOpen(false)}
-          onAddPhoto={addPhoto}
-          onDeletePhoto={deletePhoto}
-          onAddComment={addComment}
-          onSetProfile={setProfilePhoto}
+      {detailsVehicle && (
+        <VehicleDetails
+          vehicle={detailsVehicle}
+          onClose={() => setDetailsId(null)}
+          onAddService={addService}
+          onDeleteService={deleteService}
+          onAddFuel={addFuel}
+          onDeleteFuel={deleteFuel}
         />
       )}
 

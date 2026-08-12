@@ -3,17 +3,16 @@ import './Hero.scss';
 export default function Hero() {
   return (
     <section className="hero">
-      <h2 className="hero__title">Все ваши котики — в одном месте</h2>
-      <p className="hero__text">
-        «Менеджер котиков» — уютное приложение для учёта пушистых членов семьи.
-        Добавляйте котиков, указывайте породу, вес и характер — и вся коллекция
-        всегда будет под рукой. Всё хранится локально, без интернета.
+      <h2 className="hero__title">Ваши автомобили — под полным контролем</h2>
+      <p className="hero__subtitle">
+        История обслуживания и ремонтов, учёт топлива и трат, напоминания о ТО —
+        всё в одном месте и на всех устройствах.
       </p>
-      <ul className="hero__features">
-        <li className="hero__feature">📝 Добавление котика за пару секунд</li>
-        <li className="hero__feature">🗂 Удобные карточки с информацией</li>
-        <li className="hero__feature">🔒 Данные хранятся локально</li>
-      </ul>
+      <div className="hero__features">
+        <div className="hero__feature">🔧 Журнал ТО и ремонтов</div>
+        <div className="hero__feature">⛽ Расход топлива и стоимость км</div>
+        <div className="hero__feature">☁️ Синхронизация между устройствами</div>
+      </div>
     </section>
   );
 }

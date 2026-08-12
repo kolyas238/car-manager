@@ -1,0 +1,97 @@
+.vehicle-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-surface);
+  border-radius: var(--radius-l);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  animation: rise-in 0.4s ease backwards;
+
+  &--leaving {
+    animation: card-out 0.5s ease forwards;
+    pointer-events: none;
+  }
+
+  &__top { display: flex; gap: 12px; align-items: center; }
+
+  &__emoji {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    background: var(--color-bg);
+    border-radius: 12px;
+  }
+
+  &__name { margin: 0; font-size: 18px; }
+
+  &__plate {
+    margin: 2px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--color-text-muted);
+  }
+
+  &__meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0;
+  }
+
+  &__param {
+    padding: 8px 10px;
+    background: var(--color-bg);
+    border-radius: 8px;
+
+    dt {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    dd {
+      margin: 2px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  &__notes {
+    margin: 0;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+
+  &__details {
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: 10px;
+    cursor: pointer;
+
+    &:hover { border-color: var(--color-primary); }
+  }
+
+  &__actions { display: flex; gap: 8px; }
+
+  &__edit,
+  &__delete {
+    flex: 1;
+    padding: 8px;
+    font-size: 12px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover { border-color: var(--color-primary); }
+  }
+
+  &__delete:hover { border-color: var(--color-danger); }
+}

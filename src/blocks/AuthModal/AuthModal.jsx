@@ -82,9 +82,9 @@ export default function AuthModal({
         {isAnonymous ? (
           <>
             <p className="auth-modal__text">
-              Сейчас ты в гостевом режиме: котики хранятся в этом браузере
+              Сейчас ты в гостевом режиме: данные хранятся в этом браузере
               и в облаке под временным id. Привяжи почту — и сможешь войти
-              со своими котиками на любом устройстве.
+              со своими данными на любом устройстве.
             </p>
 
             <form
@@ -147,7 +147,7 @@ export default function AuthModal({
             <p className="auth-modal__text">
               Ты вошли как <b>{user.email}</b>.
               <br />
-              Котики синхронизируются между устройствами ☁️
+              Данные синхронизируются между устройствами ☁️
             </p>
             <button
               className="auth-modal__secondary"

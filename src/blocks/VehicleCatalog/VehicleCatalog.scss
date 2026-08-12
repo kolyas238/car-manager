@@ -1,0 +1,28 @@
+.vehicle-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__title { margin: 0; font-size: 22px; }
+
+  &__empty {
+    padding: 32px;
+    text-align: center;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-l);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+}
+
+@for $i from 1 through 12 {
+  .vehicle-catalog__grid > .vehicle-card:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.05}s;
+  }
+}
