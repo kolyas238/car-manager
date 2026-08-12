@@ -200,6 +200,27 @@ export function useVehicles(user, authReady) {
     commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
   };
 
+  const addPhoto = (vehicleId, dataUrl) => {
+    try {
+      const next = storage.addPhoto(vehicleId, dataUrl);
+      commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+      return true;
+    } catch (error) {
+      console.error('Не удалось сохранить фото:', error);
+      return false;
+    }
+  };
+
+  const deletePhoto = (vehicleId, photoId) => {
+    const next = storage.deletePhoto(vehicleId, photoId);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
+  const setCoverPhoto = (vehicleId, photoId) => {
+    const next = storage.setCoverPhoto(vehicleId, photoId);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
   return {
     vehicles,
     syncStatus,
@@ -214,5 +235,8 @@ export function useVehicles(user, authReady) {
     addReminder,
     deleteReminder,
     toggleReminder,
+    addPhoto,
+    deletePhoto,
+    setCoverPhoto,
   };
 }

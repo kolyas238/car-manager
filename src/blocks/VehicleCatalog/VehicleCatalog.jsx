@@ -6,6 +6,7 @@ export default function VehicleCatalog({
   onEdit,
   onDelete,
   onOpenDetails,
+  onOpenGallery,
 }) {
   return (
     <section className="vehicle-catalog">
@@ -26,6 +27,7 @@ export default function VehicleCatalog({
               onEdit={onEdit}
               onDelete={onDelete}
               onOpenDetails={onOpenDetails}
+              onOpenGallery={onOpenGallery}
             />
           ))}
         </div>

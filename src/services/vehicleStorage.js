@@ -189,3 +189,45 @@ export function toggleReminder(vehicleId, reminderId) {
     )
   );
 }
+
+export function addPhoto(vehicleId, dataUrl) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            photos: [
+              ...(v.photos || []),
+              { id: crypto.randomUUID(), dataUrl, createdAt: Date.now() },
+            ],
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}
+
+export function deletePhoto(vehicleId, photoId) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            photos: (v.photos || []).filter((p) => p.id !== photoId),
+            coverPhotoId: v.coverPhotoId === photoId ? null : v.coverPhotoId,
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}
+
+export function setCoverPhoto(vehicleId, photoId) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? { ...v, coverPhotoId: photoId, updatedAt: Date.now() }
+        : v
+    )
+  );
+}

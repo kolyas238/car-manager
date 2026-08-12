@@ -3,6 +3,7 @@ import Hero from '../../blocks/Hero/Hero';
 import VehicleForm from '../../blocks/VehicleForm/VehicleForm';
 import VehicleCatalog from '../../blocks/VehicleCatalog/VehicleCatalog';
 import VehicleDetails from '../../blocks/VehicleDetails/VehicleDetails';
+import VehicleGallery from '../../blocks/VehicleGallery/VehicleGallery';
 import BackupControls from '../../blocks/BackupControls/BackupControls';
 import SyncStatus from '../../blocks/SyncStatus/SyncStatus';
 import AuthModal from '../../blocks/AuthModal/AuthModal';
@@ -30,19 +31,28 @@ export default function Home() {
     addReminder,
     deleteReminder,
     toggleReminder,
+    addPhoto,
+    deletePhoto,
+    setCoverPhoto,
   } = useVehicles(user, authReady);
 
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [detailsId, setDetailsId] = useState(null);
+  const [galleryId, setGalleryId] = useState(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const formRef = useRef(null);
 
   const { mounted: formMounted, closing: formClosing } =
     useClosing(formOpen, 500);
+  const { mounted: galleryMounted, closing: galleryClosing } =
+    useClosing(galleryOpen, 500);
 
   const detailsVehicle =
     vehicles.find((v) => v.id === detailsId) || null;
+  const galleryVehicle =
+    vehicles.find((v) => v.id === galleryId) || null;
 
   const scrollToForm = () => {
     window.setTimeout(() => {
@@ -106,6 +116,10 @@ export default function Home() {
           onEdit={handleEdit}
           onDelete={removeVehicle}
           onOpenDetails={(vehicle) => setDetailsId(vehicle.id)}
+          onOpenGallery={(vehicle) => {
+            setGalleryId(vehicle.id);
+            setGalleryOpen(true);
+          }}
         />
 
         <BackupControls cats={vehicles} onImport={importVehicles} />
@@ -124,6 +138,17 @@ export default function Home() {
           onAddReminder={addReminder}
           onDeleteReminder={deleteReminder}
           onToggleReminder={toggleReminder}
+        />
+      )}
+
+      {galleryMounted && galleryVehicle && (
+        <VehicleGallery
+          vehicle={galleryVehicle}
+          closing={galleryClosing}
+          onClose={() => setGalleryOpen(false)}
+          onAddPhoto={addPhoto}
+          onDeletePhoto={deletePhoto}
+          onSetCover={setCoverPhoto}
         />
       )}
 

@@ -9,10 +9,14 @@ export default function VehicleCard({
   onEdit,
   onDelete,
   onOpenDetails,
+  onOpenGallery,
 }) {
   const [leaving, setLeaving] = useState(false);
   const [exporting, setExporting] = useState(false);
   const dossierRef = useRef(null);
+
+  const photos = vehicle.photos || [];
+  const coverPhoto = photos.find((p) => p.id === vehicle.coverPhotoId);
 
   const handleDelete = () => {
     if (leaving) return;
@@ -42,7 +46,17 @@ export default function VehicleCard({
       className={leaving ? 'vehicle-card vehicle-card--leaving' : 'vehicle-card'}
     >
       <div className="vehicle-card__top">
-        <div className="vehicle-card__emoji">🚗</div>
+        <div className="vehicle-card__emoji">
+          {coverPhoto ? (
+            <img
+              className="vehicle-card__cover"
+              src={coverPhoto.dataUrl}
+              alt={vehicle.make}
+            />
+          ) : (
+            '🚗'
+          )}
+        </div>
         <div className="vehicle-card__heading">
           <h3 className="vehicle-card__name">
             {vehicle.make} {vehicle.model}
@@ -91,6 +105,15 @@ export default function VehicleCard({
       {vehicle.notes && (
         <p className="vehicle-card__notes">«{vehicle.notes}»</p>
       )}
+
+      <button
+        className="vehicle-card__gallery"
+        type="button"
+        disabled={leaving}
+        onClick={() => onOpenGallery(vehicle)}
+      >
+        📸 Фото ({photos.length})
+      </button>
 
       <button
         className="vehicle-card__details"

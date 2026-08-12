@@ -111,3 +111,22 @@
 
   &--overdue { background: var(--color-danger); }
 }
+
+.vehicle-card__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.vehicle-card__gallery {
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--color-bg);
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:hover { border-color: var(--color-primary); }
+}
