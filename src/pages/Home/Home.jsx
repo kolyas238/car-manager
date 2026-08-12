@@ -10,6 +10,7 @@ import ThemeToggle from '../../blocks/ThemeToggle/ThemeToggle';
 import { useCats } from '../../hooks/useCats';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
+import { useClosing } from '../../hooks/useClosing';
 import './Home.scss';
 
 export default function Home() {
@@ -30,9 +31,15 @@ export default function Home() {
 
   const [editingCat, setEditingCat] = useState(null);
   const [galleryCatId, setGalleryCatId] = useState(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const formRef = useRef(null);
+
+  const { mounted: galleryMounted, closing: galleryClosing } =
+    useClosing(galleryOpen, 500);
+  const { mounted: formMounted, closing: formClosing } =
+    useClosing(formOpen, 500);
 
   const galleryCat = cats.find((cat) => cat.id === galleryCatId) || null;
 
@@ -72,8 +79,11 @@ export default function Home() {
       <main className="home__content">
         <Hero />
 
-        <div ref={formRef} className="home__form">
-          {formOpen ? (
+        <div
+          ref={formRef}
+          className={formClosing ? 'home__form home__form--closing' : 'home__form'}
+        >
+          {formMounted ? (
             <CatForm
               onAdd={addCat}
               onUpdate={updateCat}
@@ -96,7 +106,10 @@ export default function Home() {
           cats={cats}
           onEdit={handleEdit}
           onDelete={removeCat}
-          onOpenGallery={(cat) => setGalleryCatId(cat.id)}
+          onOpenGallery={(cat) => {
+            setGalleryCatId(cat.id);
+            setGalleryOpen(true);
+          }}
         />
 
         <BackupControls cats={cats} onImport={importCats} />
@@ -104,10 +117,11 @@ export default function Home() {
 
       <footer className="home__footer">Сделано с ❤️ для котиков</footer>
 
-      {galleryCat && (
+      {galleryMounted && galleryCat && (
         <CatGallery
           cat={galleryCat}
-          onClose={() => setGalleryCatId(null)}
+          closing={galleryClosing}
+          onClose={() => setGalleryOpen(false)}
           onAddPhoto={addPhoto}
           onDeletePhoto={deletePhoto}
           onAddComment={addComment}

@@ -9,6 +9,7 @@ export default function CatCard({ cat, onEdit, onDelete, onOpenGallery }) {
   const profilePhoto = photos.find((photo) => photo.id === cat.profilePhotoId);
   const passportRef = useRef(null);
   const [exporting, setExporting] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   const handlePdf = async () => {
     if (exporting) return;
@@ -22,8 +23,17 @@ export default function CatCard({ cat, onEdit, onDelete, onOpenGallery }) {
     }
   };
 
+  // сначала анимация исчезновения, потом реальное удаление
+  const handleDelete = () => {
+    if (leaving) return;
+    setLeaving(true);
+    window.setTimeout(() => onDelete(cat.id), 500);
+  };
+
   return (
-    <article className="cat-card">
+    <article
+      className={leaving ? 'cat-card cat-card--leaving' : 'cat-card'}
+    >
       <div className="cat-card__top">
         <div className="cat-card__avatar">
           {profilePhoto ? (
@@ -65,6 +75,7 @@ export default function CatCard({ cat, onEdit, onDelete, onOpenGallery }) {
         className="cat-card__gallery"
         type="button"
         onClick={() => onOpenGallery(cat)}
+        disabled={leaving}
       >
         📸 Галерея ({photos.length})
       </button>
@@ -74,13 +85,14 @@ export default function CatCard({ cat, onEdit, onDelete, onOpenGallery }) {
           className="cat-card__edit"
           type="button"
           onClick={() => onEdit(cat)}
+          disabled={leaving}
         >
           Изменить
         </button>
         <button
           className="cat-card__pdf"
           type="button"
-          disabled={exporting}
+          disabled={exporting || leaving}
           onClick={handlePdf}
         >
           {exporting ? '⏳ PDF…' : '📄 PDF'}
@@ -88,7 +100,8 @@ export default function CatCard({ cat, onEdit, onDelete, onOpenGallery }) {
         <button
           className="cat-card__delete"
           type="button"
-          onClick={() => onDelete(cat.id)}
+          disabled={leaving}
+          onClick={handleDelete}
         >
           Удалить
         </button>

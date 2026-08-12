@@ -5,6 +5,7 @@ import './CatGallery.scss';
 
 export default function CatGallery({
   cat,
+  closing = false,
   onClose,
   onAddPhoto,
   onDeletePhoto,
@@ -51,7 +52,10 @@ export default function CatGallery({
   };
 
   return (
-    <div className="cat-gallery" onClick={onClose}>
+    <div
+      className={closing ? 'cat-gallery cat-gallery--closing' : 'cat-gallery'}
+      onClick={onClose}
+    >
       <div
         className="cat-gallery__panel"
         onClick={(event) => event.stopPropagation()}
