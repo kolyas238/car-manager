@@ -65,6 +65,21 @@ button { font-family: inherit; }
 @keyframes pop-in {
   from { opacity: 0; transform: scale(0.94); }
   to { opacity: 1; transform: scale(1); }
+} 
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes pop-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.94); }
+}
+
+@keyframes sink-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(14px); }
 }
 
 // уважаем пользователей с отключённой анимацией

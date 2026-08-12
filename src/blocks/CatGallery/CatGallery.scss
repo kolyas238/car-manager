@@ -194,3 +194,13 @@
 
 .cat-gallery { animation: fade-in 0.2s ease; }
 .cat-gallery__panel { animation: pop-in 0.22s ease; }
+
+// плавное закрытие галереи
+.cat-gallery--closing {
+  animation: fade-out 0.5s ease forwards;
+  pointer-events: none;
+
+  .cat-gallery__panel {
+    animation: pop-out 0.5s ease forwards;
+  }
+}

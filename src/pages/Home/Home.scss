@@ -101,3 +101,14 @@
     gap: 28px;
   }
 }
+
+// плавное открытие/закрытие формы
+.home__form .cat-form,
+.home__open-form {
+  animation: rise-in 0.4s ease backwards;
+}
+
+.home__form--closing .cat-form {
+  animation: sink-out 0.5s ease forwards;
+  pointer-events: none;
+}
