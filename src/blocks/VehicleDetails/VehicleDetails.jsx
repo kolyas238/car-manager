@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { reminderStatus } from '../../utils/reminders';
+import { partSearchLinks } from '../../utils/partLinks';
 import './VehicleDetails.scss';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -25,6 +26,8 @@ export default function VehicleDetails({
   onAddReminder,
   onDeleteReminder,
   onToggleReminder,
+  onAddPart, 
+  onDeletePart,
 }) {
   const [tab, setTab] = useState('service');
   const [serviceForm, setServiceForm] = useState({
@@ -35,6 +38,9 @@ export default function VehicleDetails({
   });
   const [reminderForm, setReminderForm] = useState({
     title: '', dueDate: '', dueMileage: '',
+  });
+  const [partForm, setPartForm] = useState({
+    name: '', article: '', price: '', shop: '',
   });
 
   useEffect(() => {
@@ -48,6 +54,7 @@ export default function VehicleDetails({
   const services = vehicle.services || [];
   const fuel = vehicle.fuel || [];
   const reminders = vehicle.reminders || [];
+  const parts = vehicle.parts || [];
 
   const submitService = (event) => {
     event.preventDefault();
@@ -84,6 +91,18 @@ export default function VehicleDetails({
       dueMileage: Number(reminderForm.dueMileage) || null,
     });
     setReminderForm({ title: '', dueDate: '', dueMileage: '' });
+  };
+
+  const submitPart = (event) => {
+    event.preventDefault();
+    if (!partForm.name.trim()) return;
+    onAddPart(vehicle.id, {
+      name: partForm.name.trim(),
+      article: partForm.article.trim().toUpperCase(),
+      price: Number(partForm.price) || 0,
+      shop: partForm.shop.trim(),
+    });
+    setPartForm({ name: '', article: '', price: '', shop: '' });
   };
 
   // ─── статистика ───
@@ -161,6 +180,13 @@ export default function VehicleDetails({
             onClick={() => setTab('reminders')}
           >
             🔔 Напоминания ({reminders.length})
+          </button>
+          <button
+            type="button"
+            className={tab === 'parts' ? 'active' : ''}
+            onClick={() => setTab('parts')}
+          >
+            🔩 Запчасти ({parts.length})
           </button>
           <button
             type="button"
@@ -373,6 +399,82 @@ export default function VehicleDetails({
                     </li>
                   );
                 })}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {tab === 'parts' && (
+          <div className="vehicle-details__tab">
+            <form className="vehicle-details__form" onSubmit={submitPart}>
+              <input
+                placeholder="Название: фильтр масляный…"
+                value={partForm.name}
+                onChange={(e) => setPartForm({ ...partForm, name: e.target.value })}
+                required
+              />
+              <input
+                placeholder="Артикул"
+                value={partForm.article}
+                onChange={(e) => setPartForm({ ...partForm, article: e.target.value })}
+              />
+              <input
+                type="number"
+                min="0"
+                placeholder="Цена, ₽"
+                value={partForm.price}
+                onChange={(e) => setPartForm({ ...partForm, price: e.target.value })}
+              />
+              <input
+                placeholder="Магазин"
+                value={partForm.shop}
+                onChange={(e) => setPartForm({ ...partForm, shop: e.target.value })}
+              />
+              <button type="submit">➕ Добавить</button>
+            </form>
+
+            {parts.length === 0 ? (
+              <p className="vehicle-details__empty">
+                Запчастей пока нет. Добавь с артикулом — появятся кнопки поиска
+                по магазинам.
+              </p>
+            ) : (
+              <ul className="vehicle-details__list">
+                {parts.map((p) => (
+                  <li key={p.id} className="vehicle-details__row">
+                    <div className="vehicle-details__row-main">
+                      <b>{p.name}</b>
+                      <span className="vehicle-details__row-meta">
+                        {p.article && `арт. ${p.article} `}
+                        {p.shop && `· ${p.shop} `}
+                        {p.price > 0 && `· ${fmtMoney(p.price)}`}
+                      </span>
+                      {p.article && (
+                        <span className="vehicle-details__part-links">
+                          {partSearchLinks(p.article).map((s) => (
+                            <a
+                              key={s.label}
+                              href={s.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              🔎 {s.label}
+                            </a>
+                          ))}
+                        </span>
+                      )}
+                    </div>
+                    <div className="vehicle-details__row-side">
+                      <button
+                        type="button"
+                        title="Удалить"
+                        onClick={() => onDeletePart(vehicle.id, p.id)}
+                      >
+                        🗑
+                      </button>
+                    </div>
+                  </li>
+                ))}
               </ul>
             )}
           </div>

@@ -34,6 +34,8 @@ export default function Home() {
     addPhoto,
     deletePhoto,
     setCoverPhoto,
+    addPart,
+    deletePart,
   } = useVehicles(user, authReady);
 
   const [editingVehicle, setEditingVehicle] = useState(null);
@@ -138,6 +140,8 @@ export default function Home() {
           onAddReminder={addReminder}
           onDeleteReminder={deleteReminder}
           onToggleReminder={toggleReminder}
+          onAddPart={addPart}
+          onDeletePart={deletePart}
         />
       )}
 

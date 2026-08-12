@@ -231,3 +231,34 @@ export function setCoverPhoto(vehicleId, photoId) {
     )
   );
 }
+
+export function addPart(vehicleId, data) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            parts: [
+              { ...data, id: crypto.randomUUID(), createdAt: Date.now() },
+              ...(v.parts || []),
+            ],
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}
+
+export function deletePart(vehicleId, partId) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            parts: (v.parts || []).filter((p) => p.id !== partId),
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}

@@ -221,6 +221,16 @@ export function useVehicles(user, authReady) {
     commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
   };
 
+  const addPart = (vehicleId, data) => {
+    const next = storage.addPart(vehicleId, data);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
+  const deletePart = (vehicleId, partId) => {
+    const next = storage.deletePart(vehicleId, partId);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
   return {
     vehicles,
     syncStatus,
@@ -238,5 +248,7 @@ export function useVehicles(user, authReady) {
     addPhoto,
     deletePhoto,
     setCoverPhoto,
+    addPart,
+    deletePart,
   };
 }
