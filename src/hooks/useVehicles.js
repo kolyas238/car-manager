@@ -185,6 +185,21 @@ export function useVehicles(user, authReady) {
     commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
   };
 
+    const addReminder = (vehicleId, data) => {
+    const next = storage.addReminder(vehicleId, data);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
+  const deleteReminder = (vehicleId, reminderId) => {
+    const next = storage.deleteReminder(vehicleId, reminderId);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
+  const toggleReminder = (vehicleId, reminderId) => {
+    const next = storage.toggleReminder(vehicleId, reminderId);
+    commit(next, [{ type: 'vehicle-set', vehicle: fullOf(next, vehicleId) }]);
+  };
+
   return {
     vehicles,
     syncStatus,
@@ -196,5 +211,8 @@ export function useVehicles(user, authReady) {
     deleteService,
     addFuel,
     deleteFuel,
+    addReminder,
+    deleteReminder,
+    toggleReminder,
   };
 }

@@ -7,6 +7,7 @@
   border-radius: var(--radius-l);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   animation: rise-in 0.4s ease backwards;
+  position: relative;     
 
   &--leaving {
     animation: card-out 0.5s ease forwards;
@@ -81,6 +82,7 @@
   &__actions { display: flex; gap: 8px; }
 
   &__edit,
+  &__pdf,
   &__delete {
     flex: 1;
     padding: 8px;
@@ -94,4 +96,18 @@
   }
 
   &__delete:hover { border-color: var(--color-danger); }
+}
+
+.vehicle-card__alert {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--color-primary);
+  border-radius: 999px;
+
+  &--overdue { background: var(--color-danger); }
 }

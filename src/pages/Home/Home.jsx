@@ -27,6 +27,9 @@ export default function Home() {
     deleteService,
     addFuel,
     deleteFuel,
+    addReminder,
+    deleteReminder,
+    toggleReminder,
   } = useVehicles(user, authReady);
 
   const [editingVehicle, setEditingVehicle] = useState(null);
@@ -118,6 +121,9 @@ export default function Home() {
           onDeleteService={deleteService}
           onAddFuel={addFuel}
           onDeleteFuel={deleteFuel}
+          onAddReminder={addReminder}
+          onDeleteReminder={deleteReminder}
+          onToggleReminder={toggleReminder}
         />
       )}
 

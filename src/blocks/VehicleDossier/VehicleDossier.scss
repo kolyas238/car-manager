@@ -1,0 +1,71 @@
+// всегда светлый, цвета фиксированные — его снимает html2canvas
+.vehicle-dossier {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 794px; // A4 @ 96dpi
+  padding: 40px;
+  background: #ffffff;
+  color: #1f2937;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+
+  h1 { margin: 0 0 6px; font-size: 24px; }
+  h2 { margin: 24px 0 8px; font-size: 16px; }
+
+  &__header p { margin: 0; color: #6b7280; }
+
+  &__stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+
+    > div {
+      flex: 1;
+      padding: 10px 14px;
+      background: #f3f4f6;
+      border-radius: 8px;
+
+      span {
+        display: block;
+        font-size: 11px;
+        color: #6b7280;
+      }
+
+      b { font-size: 15px; }
+    }
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 6px 8px;
+      border: 1px solid #d1d5db;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+  }
+
+  &__total td {
+    font-weight: 700;
+    background: #f9fafb;
+  }
+
+  &__empty { color: #6b7280; }
+
+  &__footer {
+    margin-top: 28px;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+}

@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
+import { reminderStatus } from '../../utils/reminders';
 import './VehicleDetails.scss';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
 const fmtMoney = (n) => `${(n || 0).toLocaleString('ru-RU')} ₽`;
+
+const STATUS_ORDER = { overdue: 0, soon: 1, planned: 2, done: 3 };
+
+const STATUS_LABEL = {
+  overdue: 'просрочено',
+  soon: 'скоро',
+  planned: 'в плане',
+  done: 'готово',
+};
 
 export default function VehicleDetails({
   vehicle,
@@ -12,6 +22,9 @@ export default function VehicleDetails({
   onDeleteService,
   onAddFuel,
   onDeleteFuel,
+  onAddReminder,
+  onDeleteReminder,
+  onToggleReminder,
 }) {
   const [tab, setTab] = useState('service');
   const [serviceForm, setServiceForm] = useState({
@@ -19,6 +32,9 @@ export default function VehicleDetails({
   });
   const [fuelForm, setFuelForm] = useState({
     date: today(), mileage: '', liters: '', cost: '',
+  });
+  const [reminderForm, setReminderForm] = useState({
+    title: '', dueDate: '', dueMileage: '',
   });
 
   useEffect(() => {
@@ -31,6 +47,7 @@ export default function VehicleDetails({
 
   const services = vehicle.services || [];
   const fuel = vehicle.fuel || [];
+  const reminders = vehicle.reminders || [];
 
   const submitService = (event) => {
     event.preventDefault();
@@ -58,6 +75,17 @@ export default function VehicleDetails({
     setFuelForm({ date: today(), mileage: '', liters: '', cost: '' });
   };
 
+  const submitReminder = (event) => {
+    event.preventDefault();
+    if (!reminderForm.title.trim()) return;
+    onAddReminder(vehicle.id, {
+      title: reminderForm.title.trim(),
+      dueDate: reminderForm.dueDate || null,
+      dueMileage: Number(reminderForm.dueMileage) || null,
+    });
+    setReminderForm({ title: '', dueDate: '', dueMileage: '' });
+  };
+
   // ─── статистика ───
   const serviceTotal = services.reduce((sum, r) => sum + (r.cost || 0), 0);
   const fuelTotal = fuel.reduce((sum, r) => sum + (r.cost || 0), 0);
@@ -83,6 +111,12 @@ export default function VehicleDetails({
     ? Math.max(...allMileages) - Math.min(...allMileages)
     : 0;
   const costPerKm = kmSpan > 0 ? (serviceTotal + fuelTotal) / kmSpan : null;
+
+  const sortedReminders = [...reminders].sort(
+    (a, b) =>
+      STATUS_ORDER[reminderStatus(a, vehicle)] -
+      STATUS_ORDER[reminderStatus(b, vehicle)]
+  );
 
   return (
     <div className="vehicle-details" onClick={onClose}>
@@ -120,6 +154,13 @@ export default function VehicleDetails({
             onClick={() => setTab('fuel')}
           >
             ⛽ Топливо ({fuel.length})
+          </button>
+          <button
+            type="button"
+            className={tab === 'reminders' ? 'active' : ''}
+            onClick={() => setTab('reminders')}
+          >
+            🔔 Напоминания ({reminders.length})
           </button>
           <button
             type="button"
@@ -259,6 +300,79 @@ export default function VehicleDetails({
                     </div>
                   </li>
                 ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {tab === 'reminders' && (
+          <div className="vehicle-details__tab">
+            <form className="vehicle-details__form" onSubmit={submitReminder}>
+              <input
+                placeholder="Например: замена масла"
+                value={reminderForm.title}
+                onChange={(e) => setReminderForm({ ...reminderForm, title: e.target.value })}
+                required
+              />
+              <input
+                type="date"
+                value={reminderForm.dueDate}
+                onChange={(e) => setReminderForm({ ...reminderForm, dueDate: e.target.value })}
+              />
+              <input
+                type="number"
+                min="0"
+                placeholder="Пробег-порог, км"
+                value={reminderForm.dueMileage}
+                onChange={(e) => setReminderForm({ ...reminderForm, dueMileage: e.target.value })}
+              />
+              <button type="submit">➕ Добавить</button>
+            </form>
+
+            {reminders.length === 0 ? (
+              <p className="vehicle-details__empty">
+                Напоминаний нет. Добавь: масло, ОСАГО, техосмотр, шиномонтаж…
+              </p>
+            ) : (
+              <ul className="vehicle-details__list">
+                {sortedReminders.map((r) => {
+                  const status = reminderStatus(r, vehicle);
+                  return (
+                    <li
+                      key={r.id}
+                      className={`vehicle-details__reminder vehicle-details__reminder--${status}`}
+                    >
+                      <div className="vehicle-details__row-main">
+                        <b className={r.done ? 'vehicle-details__done-text' : ''}>
+                          {r.title}
+                        </b>
+                        <span className="vehicle-details__row-meta">
+                          {r.dueDate && `до ${r.dueDate} `}
+                          {r.dueMileage && `до ${r.dueMileage.toLocaleString('ru-RU')} км`}
+                        </span>
+                      </div>
+                      <div className="vehicle-details__row-side">
+                        <span className={`vehicle-details__chip vehicle-details__chip--${status}`}>
+                          {STATUS_LABEL[status]}
+                        </span>
+                        <button
+                          type="button"
+                          title={r.done ? 'Вернуть в работу' : 'Отметить выполненным'}
+                          onClick={() => onToggleReminder(vehicle.id, r.id)}
+                        >
+                          {r.done ? '↩️' : '✅'}
+                        </button>
+                        <button
+                          type="button"
+                          title="Удалить"
+                          onClick={() => onDeleteReminder(vehicle.id, r.id)}
+                        >
+                          🗑
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

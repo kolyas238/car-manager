@@ -142,3 +142,50 @@ export function removeTombstone(id) {
     JSON.stringify(getTombstones().filter((t) => t !== id))
   );
 }
+
+export function addReminder(vehicleId, data) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            reminders: [
+              { ...data, id: crypto.randomUUID(), done: false, createdAt: Date.now() },
+              ...(v.reminders || []),
+            ],
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}
+
+export function deleteReminder(vehicleId, reminderId) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            reminders: (v.reminders || []).filter((r) => r.id !== reminderId),
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}
+
+export function toggleReminder(vehicleId, reminderId) {
+  return writeVehicles(
+    readVehicles().map((v) =>
+      v.id === vehicleId
+        ? {
+            ...v,
+            reminders: (v.reminders || []).map((r) =>
+              r.id === reminderId ? { ...r, done: !r.done } : r
+            ),
+            updatedAt: Date.now(),
+          }
+        : v
+    )
+  );
+}

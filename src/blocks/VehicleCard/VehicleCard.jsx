@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { vehicleAlerts } from '../../utils/reminders';
+import { exportVehicleToPdf } from '../../utils/pdf';
+import VehicleDossier from '../VehicleDossier/VehicleDossier';
 import './VehicleCard.scss';
 
 export default function VehicleCard({
@@ -8,6 +11,8 @@ export default function VehicleCard({
   onOpenDetails,
 }) {
   const [leaving, setLeaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const dossierRef = useRef(null);
 
   const handleDelete = () => {
     if (leaving) return;
@@ -15,8 +20,22 @@ export default function VehicleCard({
     window.setTimeout(() => onDelete(vehicle.id), 500);
   };
 
+  const handlePdf = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await exportVehicleToPdf(vehicle, dossierRef.current);
+    } catch (error) {
+      console.error('Не удалось создать PDF:', error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const records =
     (vehicle.services?.length || 0) + (vehicle.fuel?.length || 0);
+
+  const { overdue, soon } = vehicleAlerts(vehicle);
 
   return (
     <article
@@ -32,6 +51,22 @@ export default function VehicleCard({
             {vehicle.plate || 'без номера'}
           </p>
         </div>
+        {(overdue > 0 || soon > 0) && (
+          <span
+            className={
+              overdue > 0
+                ? 'vehicle-card__alert vehicle-card__alert--overdue'
+                : 'vehicle-card__alert'
+            }
+            title={
+              overdue > 0
+                ? 'Есть просроченные напоминания'
+                : 'Скоро обслуживание'
+            }
+          >
+            🔔 {overdue + soon}
+          </span>
+        )}
       </div>
 
       <dl className="vehicle-card__meta">
@@ -76,6 +111,14 @@ export default function VehicleCard({
           Изменить
         </button>
         <button
+          className="vehicle-card__pdf"
+          type="button"
+          disabled={exporting || leaving}
+          onClick={handlePdf}
+        >
+          {exporting ? '⏳ PDF…' : '📄 PDF'}
+        </button>
+        <button
           className="vehicle-card__delete"
           type="button"
           disabled={leaving}
@@ -84,6 +127,9 @@ export default function VehicleCard({
           Удалить
         </button>
       </div>
+
+      {/* скрытое досье для рендера в PDF */}
+      <VehicleDossier vehicle={vehicle} innerRef={dossierRef} />
     </article>
   );
 }
