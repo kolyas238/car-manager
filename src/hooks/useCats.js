@@ -4,7 +4,7 @@ import * as queue from '../services/syncQueue';
 import * as cloud from '../services/cloud';
 import { mergeCats } from '../utils/catMerge';
 
-const SEED_KEY = 'cat-manager:cloud-seeded';
+const SEED_KEY = 'car-manager:cloud-seeded';
 
 async function applyOp(uid, op) {
   switch (op.type) {

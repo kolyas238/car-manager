@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'cat-manager:cats';
+const STORAGE_KEY = 'car-manager:cats';
 
 function readCats() {
   try {
@@ -148,7 +148,7 @@ export function addComment(catId, photoId, text) {
 }
 
 // ─── Надгробия: синхронизация удалений ────────────────
-const TOMB_KEY = 'cat-manager:tombstones';
+const TOMB_KEY = 'car-manager:tombstones';
 
 export function getTombstones() {
   try {

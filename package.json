@@ -1,8 +1,8 @@
 {
-  "name": "cat-manager",
+  "name": "car-manager",
   "private": true,
-  "version": "0.8.0",
-  "description": "Менеджер котиков: анкеты пушистых, фотогалереи, PDF-паспорта и облачная синхронизация между устройствами",
+  "version": "0.0.0",
+  "description": "Менеджер автомобилей: история обслуживания, траты, ТО и документы",
   "author": {
     "name": "k238",
     "email": "kolyas238@gmail.com"
@@ -46,8 +46,8 @@
     "electron-winstaller@5.4.0": true
   },
   "build": {
-    "appId": "ru.catmanager.app",
-    "productName": "Cat Manager",
+    "appId": "ru.carmanager.app",
+    "productName": "Менеджер автомобилей",
     "icon": "build/icon.ico",
     "files": [
       "dist/**/*",

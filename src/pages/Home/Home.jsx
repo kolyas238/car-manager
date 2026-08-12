@@ -63,8 +63,8 @@ export default function Home() {
   return (
     <div className="home">
       <header className="home__header header">
-        <span className="header__logo">🐾</span>
-        <h1 className="header__title">Менеджер котиков</h1>
+        <span className="header__logo">🚗</span>
+        <h1 className="header__title">Менеджер авто</h1>
         <SyncStatus status={syncStatus} />
         <ThemeToggle theme={theme} onToggle={toggleTheme} />
         <button
@@ -97,7 +97,7 @@ export default function Home() {
               type="button"
               onClick={() => setFormOpen(true)}
             >
-              ➕ Добавить котика
+              ➕ Добавить авто
             </button>
           )}
         </div>
@@ -115,7 +115,7 @@ export default function Home() {
         <BackupControls cats={cats} onImport={importCats} />
       </main>
 
-      <footer className="home__footer">Сделано с ❤️ для котиков</footer>
+      <footer className="home__footer">Сделано с ❤️ для автовладельцев</footer>
 
       {galleryMounted && galleryCat && (
         <CatGallery

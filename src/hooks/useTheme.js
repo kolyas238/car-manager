@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const THEME_KEY = 'cat-manager:theme';
+const THEME_KEY = 'car-manager:theme';
 
 export function useTheme() {
   const [theme, setTheme] = useState(() => {

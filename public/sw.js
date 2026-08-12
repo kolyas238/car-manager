@@ -1,4 +1,4 @@
-const CACHE = 'cat-manager-v1';
+const CACHE = 'car-manager-v1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

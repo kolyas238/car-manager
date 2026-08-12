@@ -7,24 +7,24 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 
-const catsCollection = (uid) => collection(db, 'users', uid, 'cats');
+const catsCollection = (uid) => collection(db, 'users', uid, 'vehicles');
 const photosCollection = (uid, catId) =>
-  collection(db, 'users', uid, 'cats', catId, 'photos');
+  collection(db, 'users', uid, 'vehicles', catId, 'photos');
 
 export async function pushCat(uid, cat) {
   const { photos, ...catData } = cat; // фото едут отдельно
-  await setDoc(doc(db, 'users', uid, 'cats', cat.id), catData);
+  await setDoc(doc(db, 'users', uid, 'vehicles', cat.id), catData);
 }
 
 export async function pushPhoto(uid, catId, photo) {
   await setDoc(
-    doc(db, 'users', uid, 'cats', catId, 'photos', photo.id),
+    doc(db, 'users', uid, 'vehicles', catId, 'photos', photo.id),
     photo
   );
 }
 
 export async function deletePhoto(uid, catId, photoId) {
-  await deleteDoc(doc(db, 'users', uid, 'cats', catId, 'photos', photoId));
+  await deleteDoc(doc(db, 'users', uid, 'vehicles', catId, 'photos', photoId));
 }
 
 export async function deleteCatWithPhotos(uid, catId) {
@@ -32,7 +32,7 @@ export async function deleteCatWithPhotos(uid, catId) {
   for (const photoDoc of photosSnap.docs) {
     await deleteDoc(photoDoc.ref);
   }
-  await deleteDoc(doc(db, 'users', uid, 'cats', catId));
+  await deleteDoc(doc(db, 'users', uid, 'vehicles', catId));
 }
 
 export async function pullAll(uid) {

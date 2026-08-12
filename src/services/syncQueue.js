@@ -1,4 +1,4 @@
-const QUEUE_KEY = 'cat-manager:sync-queue';
+const QUEUE_KEY = 'car-manager:sync-queue';
 
 export function getQueue() {
   try {
